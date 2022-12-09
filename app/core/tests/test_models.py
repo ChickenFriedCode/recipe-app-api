@@ -1,21 +1,42 @@
 """
 Tests for models.
 """
+from decimal import Decimal
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
+from core import models
+
+
+def create_user_helper(email="test@example.com", password="testpass123"):
+    """
+    A helper that creates a temp user
+    So I don't have to repeat code.
+    """
+    return get_user_model().objects.create_user(
+        email=email,
+        password=password,
+    )
 
 
 class ModelTests(TestCase):
     """Test Models."""
 
+    # --
+    # General User management tests most apps will have.
+    # -
+    # User Creation and Authentication Model Tests:
+
     def test_create_user_with_email_successful(self):
-        """Test creating a user with an email is succedful."""
+        """Test creating a user with an email is successful."""
         email = 'test@example.com'
         password = 'testpass123'
-        user = get_user_model().objects.create_user(
-            email=email,
-            password=password,
-        )
+        user = create_user_helper(email=email, password=password)
+        # user = get_user_model().objects.create_user(
+        #    email=email,
+        #    password=password,
+        # )
 
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
@@ -46,3 +67,23 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    # --
+    # Models based on the app being made:
+    # -
+    # Recipe Model Tests:
+
+    def test_create_recipe(self):
+        """ Test for create recipe is successful """
+        user = create_user_helper()
+        recipe = models.Recipe.objects.create(
+            user=user,
+            title='Sample Recipe Title: Cookies for all~!',
+            time_minutes=5,
+            price=Decimal('5.50'),
+            description=('Sample Description: '
+                         'These cookies are tasty~! '
+                         'Here is how you make them!')
+        )
+
+        self.assertEqual(str(recipe), recipe.title)
