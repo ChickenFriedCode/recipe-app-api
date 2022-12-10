@@ -93,7 +93,7 @@ class ModelTests(TestCase):
         user = create_user_helper()
         tag = models.Tag.objects.create(
             user=user,
-            name='Test Tag',
+            name='tag1',
         )
 
         self.assertEqual(str(tag), tag.name)
