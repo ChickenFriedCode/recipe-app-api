@@ -20,6 +20,10 @@ def detail_url(tag_id):
 
 
 # Helper functions:
+def print_helper(thing):
+    print(f"\n\n{thing}\n")
+
+
 def create_user_helper(email='user@example.com', password='testpassword123'):
     """Helper function to create a user."""
     return get_user_model().objects.create_user(email=email, password=password)
@@ -80,6 +84,7 @@ class PrivateTagsApiTests(TestCase):
         payload = {'name': 'Less food'}
         url = detail_url(tag.id)
         res = self.client.patch(url, payload)
+        print_helper(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         tag.refresh_from_db()
         self.assertEqual(tag.name, payload['name'])
